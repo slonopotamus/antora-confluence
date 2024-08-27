@@ -45,6 +45,7 @@ export type CaptainConfig = {
   editorVersion?: "v1" | "v2";
   ancestorId?: string;
   showBanner?: boolean;
+  bannerText?: string;
   excludeFiles?: string[];
   mapper?: PathMapper[];
   filter?: PageFilter[];

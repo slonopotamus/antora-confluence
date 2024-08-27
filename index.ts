@@ -46,6 +46,14 @@ const publishToConfluence = async (
   pageStructure.set("inventory", new Map());
   pageStructure.set("flat", []);
 
+  const bannerText = destConfig.showBanner || false ?
+      destConfig.bannerText || `<ac:structured-macro ac:name="note" ac:schema-version="1"><ac:rich-text-body>
+                      <p>This page has been published via Antora plugin. 
+                      Every change to this site will be lost, if you run Antora the next time. 
+                      You can still use comments, as they will be preserved.</p>
+                      </ac:rich-text-body></ac:structured-macro>`
+      : undefined;
+
   const state = await initializeState(confluenceClient);
   if (state) {
     const stateValues: PageRepresentation[] = Object.values(
@@ -66,8 +74,8 @@ const publishToConfluence = async (
       confluenceClient,
       outPutDir,
       pageStructure,
-      destConfig.showBanner || false,
       pageStructure.get("flat"),
+      bannerText,
       renames,
     );
 
@@ -86,8 +94,8 @@ const publishToConfluence = async (
       confluenceClient,
       outPutDir,
       pageStructure,
-      destConfig.showBanner || false,
       pageStructure.get("flat"),
+      bannerText
     );
 
     await createState(

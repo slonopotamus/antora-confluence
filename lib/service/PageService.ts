@@ -219,8 +219,8 @@ const publish = async (
   confluenceClient: ConfluenceClient,
   outPutDir: string,
   pageTree: any,
-  showBanner: boolean,
   flatPages: any,
+  bannerText?: string,
   renames?: PageDeltaImage[],
   parent?: string,
 ) => {
@@ -236,7 +236,7 @@ const publish = async (
         const confluencePage = processPage(
           page,
           outPutDir,
-          showBanner,
+          bannerText,
           flatPages,
         );
         if (confluencePage) {
@@ -371,8 +371,8 @@ const publish = async (
         confluenceClient,
         outPutDir,
         pageTree[key],
-        showBanner,
         flatPages,
+        bannerText,
         renames,
         key,
       );
@@ -383,8 +383,8 @@ const publish = async (
 const processPage = (
   page: any,
   outPutDir: string,
-  showBanner: boolean,
   flatPages: any,
+  bannerText?: string,
 ) => {
   LOGGER.info(`Processing ${page.fileName}`);
   const baseUrl = path.join(process.cwd(), outPutDir, Path.dirname(page.fqfn));
@@ -412,12 +412,8 @@ const processPage = (
       .replaceAll("checked />", 'checked="checked" />')
       .replaceAll(Placeholder.CDATA_PLACEHOLDER_START, "<![CDATA[")
       .replaceAll(Placeholder.CDATA_PLACEHOLDER_END, "]]>");
-    if (showBanner) {
-      htmlContent = `<ac:structured-macro ac:name="note" ac:schema-version="1"><ac:rich-text-body>
-                    <p>This page has been published via Antora plugin. 
-                    Every change to this site will be lost, if you run Antora the next time. 
-                    You can still use comments, as they will be preserved.</p>
-                    </ac:rich-text-body></ac:structured-macro>${htmlContent}`;
+    if (bannerText) {
+      htmlContent = `${bannerText}${htmlContent}`;
     }
     const localHash = calculateHash(htmlContent);
     htmlContent += `<ac:placeholder><p class="${PageIdentifier.LOCAL_HASH_TAG_ID}">${localHash}</p></ac:placeholder>`;
